@@ -1,9 +1,0 @@
-{% include 'header.html' %}
-    <h2>Edit License</h2>
-    <form method="post" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save Changes</button>
-        <a href="{% url 'client' %}" class="btn btn-dark">License</a>
-    </form>
-{% include 'footer.html' %}
