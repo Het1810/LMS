@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block title %}License List{% endblock %}
+{% block head %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+{%endblock%}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div style="display: flex; justify-content: space-between;align-items: baseline;padding: 0 10px;">
+        <h4>Licence View</h4>
+        <h4 class="inline-block">Client :  {{ client.nvarname }} ({{ data|length }} Licences)</h4>
+<!--        <h4 class="float-right">Add License</h4>-->
+        <h4><a href="{% url 'licence_add' intclientid=client.intid %}">Add Licence</a></h4>
+        <h5><a href="{% url 'client' %}">Back</a></h5>
+            <!-- Include other fields you want to display -->
+    </div>
+
+    <div class="table-responsive" >
+        <table class="table table-bordered table-striped table-center">
+            <thead>
+                <tr style="text-align: center;">
+<!--                    <th>Id</th>-->
+<!--                    <th>Client Id</th>-->
+                    <th>Key</th>
+                    <th>Validity in days</th>
+                    <th>Active</th>
+                    <th>reference</th>
+                    <th>Mac Address</th>
+                    <th>start date</th>
+                    <th>End date</th>
+                    <th>Edit</th>
+<!--                    <th>Remote</th>-->
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody style="text-align:center">
+                {% for client in data %}
+                    <tr>
+<!--                        <td>{{ client.intid }}</td>-->
+<!--                        <td>{{ client.intclientid.intid }}</td>-->
+                        <td>{{ client.nvarkey }}</td>
+                        <td>{{ client.intvalidity }}</td>
+                        <td>{{ client.bitactive }}</td>
+                        <td>{{ client.nvarreference }}</td>
+                        <td>{{ client.crelicensestatus.nvarmacaddress }}</td>
+                        <td>{{ client.crelicensestatus.dtstartdate }}</td>
+                        <td>{{ client.crelicensestatus.dtenddate }}</td>
+                        <td style="textcontent">
+                            <a href="{% url 'licence_edit' intclientid=client.intid %}" class="btn btn-block" >Edit
+<!--                                <button class="btn btn-block"></button>-->
+                            </a>
+<!--                            <a>ADD Licence</a>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <a href="#" >Remote</a>-->
+<!--                            <a href="{% url 'remote' client_id=client.intid %}" >Remote</a>-->
+                        </td>
+                        <td>
+<!--                            <a href="#" onclick="Deleteconfirm('{{ client.intid }}', '{{ client.nvarkey }}')">-->
+                                <button class="btn btn-block deleteBtn" data-client-id="{{ client.intid }}" data-client-name="{{ client.nvarkey }}">Delete</button>
+<!--                            </a>-->
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Attach click event to the logout button
+        $(".deleteBtn").on("click", function () {
+            var clientkey = $(this).data("client-name");
+            var clientId = $(this).data("client-id");
+            // Display custom confirmation dialog
+            showDeleteConfirmation(clientkey, clientId);
+        });
+    });
+
+    function showDeleteConfirmation(clientkey, clientId) {
+        // Create a modal for the confirmation dialog
+        var modal = $("<div>").attr("id", "logoutModal").addClass("modal fade");
+        var modalDialog = $("<div>").addClass("modal-dialog");
+        var modalContent = $("<div>").addClass("modal-content");
+
+        // Modal header with a title
+        var modalHeader = $("<div>").addClass("modal-header");
+        modalHeader.append($("<h5>").addClass("modal-title").text("Delete Client Confirmation"));
+        modalContent.append(modalHeader);
+
+        // Modal body with a message
+        var modalBody = $("<div>").addClass("modal-body");
+        modalBody.append($("<p>").text("Do you Really want to Delete license " + clientkey + "?"));
+        modalContent.append(modalBody);
+
+        // Modal footer with Yes and Cancel buttons
+        var modalFooter = $("<div>").addClass("modal-footer");
+        var yesButton = $("<button>").attr("id", "yesButton").addClass("btn btn-primary").text("Yes");
+        yesButton.on("click", function () {
+
+            // Call the clientDelete function with the client ID
+            licenceDelete(clientId);
+
+        });
+        var cancelButton = $("<button>").addClass("btn btn-secondary").text("Cancel").on("click", function () {
+            // If the user clicks "No", close the modal
+            closeModal();
+
+        });
+        modalFooter.append(yesButton, cancelButton);
+        modalContent.append(modalFooter);
+
+        // Append elements to the modal
+        modalDialog.append(modalContent);
+        modal.append(modalDialog);
+
+        // Append the modal to the body
+        $("body").append(modal);
+
+        // Display the modal using Bootstrap modal method
+        modal.modal("show");
+
+
+    }
+
+
+    function closeModal() {
+        // Close the modal by removing it from the DOM
+        $("#logoutModal").on("hidden.bs.modal", function () {
+            $(this).remove();
+        }).modal("hide");
+    }
+</script>
+{% endblock %}

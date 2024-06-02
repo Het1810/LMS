@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log in</title>
+    <link rel="stylesheet" href="{% static 'css/form.css' %}">
+    <!-- Add this to your base.html or the template where you include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!--    <style>-->
+<!--      .error-message {-->
+<!--          color: red;-->
+<!--      }-->
+<!--    </style>-->
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-header">
+      <h2>Login</h2>
+    </div>
+
+    <div class="login-body">
+      <form method="post" action="{% url 'login' %}" class="login-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+
+<!--        {% if messages %}-->
+<!--          <ul class="messages">-->
+<!--            {% for message in messages %}-->
+<!--              <li class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</li>-->
+<!--            {% endfor %}-->
+<!--          </ul>-->
+<!--        {% endif %}-->
+
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+  <script>
+    // Set focus on the first form field when the page loads
+    $("#username").focus();
+
+    $(document).ready(function () {
+        setTimeout(function () {
+            $(".error-message").fadeOut("slow");
+        }, 5000); // 5000 milliseconds (5 seconds)
+    });
+
+    {% if messages %}
+        $(document).ready(function () {
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    alert("{{ message }}");
+                {% endif %}
+            {% endfor %}
+        });
+    {% endif %}
+
+  </script>
+</body>
+</html>

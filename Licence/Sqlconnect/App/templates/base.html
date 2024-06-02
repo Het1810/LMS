@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>-->
+    <script src="{% static 'js/custom.js' %}"></script>
+
+    {% block head %}{%endblock%}
+    <!--    <link rel="stylesheet" href="#">-->
+
+</head>
+<body>
+<!--    <h6 align="center">Hello</h6>-->
+<header >
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'images/logo1.png' %}" alt="Your Logo" height="30">
+            </a>
+            <ul class="navbar-nav ">
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'client' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'client_add' %}" class="nav-link active">Add Client</a>
+                </li>
+                <li class="nav-item ">
+                    <a href="{% url 'log_view' %}" class="nav-link active" >Logs</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+<!--                    <h4 style="margin-right: 20px; margin-left: 20px; margin-bottom: 0px;"><a class="nav-link active">Welcome</a></h4>-->
+                    <h4 style="color:white; padding: 8px 25px; margin-bottom: 0px; text-decoration: underline;">Welcome {{ user.username }} !</h4>
+                </li>
+                <li class="nav-item ">
+<!--                    <a class="btn nav-link active"  href="#" onclick="confirmLogout()">Logout</a>-->
+<!--                    <a class="btn nav-link active"  href="{% url 'logout' %}">Logout</a>-->
+                    <button class="btn btn-light" id="logoutButton" style="margin-top: 4px;">Logout</button>
+
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+{% block content %}{% endblock %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+
+<script>
+    $(document).ready(function () {
+        // Attach click event to the logout button
+        $("#logoutButton").on("click", function () {
+            // Display custom confirmation dialog
+            showLogoutConfirmation();
+        });
+    });
+
+    function showLogoutConfirmation() {
+        // Create a modal for the confirmation dialog
+        var modal = $("<div>").attr("id", "logoutModal").addClass("modal fade");
+        var modalDialog = $("<div>").addClass("modal-dialog");
+        var modalContent = $("<div>").addClass("modal-content");
+
+        // Modal header with a title
+        var modalHeader = $("<div>").addClass("modal-header");
+        modalHeader.append($("<h5>").addClass("modal-title").text("Logout Confirmation"));
+        modalContent.append(modalHeader);
+
+        // Modal body with a message
+        var modalBody = $("<div>").addClass("modal-body");
+        modalBody.append($("<p>").text("Are you sure you want to Logout?"));
+        modalContent.append(modalBody);
+
+        // Modal footer with Yes and Cancel buttons
+        var modalFooter = $("<div>").addClass("modal-footer");
+        var yesButton = $("<button>").addClass("btn btn-primary").text("Yes").on("click", function () {
+            // If the user clicks "Yes", redirect to the logout URL
+            window.location.href = "{% url 'logout' %}";
+        });
+        var cancelButton = $("<button>").addClass("btn btn-secondary").text("No").on("click", function () {
+            // If the user clicks "No", close the modal
+            closeModal();
+        });
+        modalFooter.append(yesButton, cancelButton);
+        modalContent.append(modalFooter);
+
+        // Append elements to the modal
+        modalDialog.append(modalContent);
+        modal.append(modalDialog);
+
+        // Append the modal to the body
+        $("body").append(modal);
+
+        // Display the modal using Bootstrap modal method
+        modal.modal("show");
+    }
+
+
+    function closeModal() {
+        // Close the modal by removing it from the DOM
+        $("#logoutModal").on("hidden.bs.modal", function () {
+            $(this).remove();
+        }).modal("hide");
+    }
+</script>
+
+
+</body>
+</html>

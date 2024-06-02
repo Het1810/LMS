@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}License Form{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Add a New License for {{ client.nvarname }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'licence_add' intclientid=client.intid %}" id="licenseForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="intclientid" value="{{ client.intid }}">
+                        <div class="mb-3 row">
+                            <label for="{{ form.nvarkey.id_for_label }}" class="col-sm-4 col-form-label">License Key</label>
+                            <div class="col-sm-4">
+                                {{ form.nvarkey }}
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="button" id="generateKeyBtn" class="btn btn-secondary btn-sm">Generate Key</button>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="{{ form.intvalidity.id_for_label }}" class="col-sm-4 col-form-label">Validity (days)</label>
+                            <div class="col-sm-8">
+                                {{ form.intvalidity }}
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="{{ form.nvarreference.id_for_label }}" class="col-sm-4 col-form-label">Reference</label>
+                            <div class="col-sm-8">
+                                {{ form.nvarreference }}
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="{{ form.intremoteid.id_for_label }}" class="col-sm-4 col-form-label">Remote id</label>
+                            <div class="col-sm-8">
+                                {{ form.intremoteid }}
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="{{ form.nvarremotepass.id_for_label }}" class="col-sm-4 col-form-label">Remote Password</label>
+                            <div class="col-sm-8">
+                                {{ form.nvarremotepass }}
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="{{ form.bitactive.id_for_label }}" class="col-sm-4 col-form-label">Active</label>
+                            <div class="col-sm-8">
+                                {{ form.bitactive }}
+                            </div>
+                        </div>
+                        <!-- Add more form fields as needed -->
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a href="{% url 'licence' client_id=client.intid %}" class="btn btn-secondary">Back</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+<!--    // Add event listener to toggle the visibility of license status fields-->
+<!--    document.getElementById('id_bitactive').addEventListener('change', function() {-->
+<!--        var licenseStatusFields = document.getElementById('licenseStatusFields');-->
+<!--        if (this.checked) {-->
+<!--            licenseStatusFields.style.display = 'block';-->
+<!--        } else {-->
+<!--            licenseStatusFields.style.display = 'none';-->
+<!--        }-->
+<!--    });-->
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set focus on the desired input field
+        document.getElementById('id_intvalidity').focus();
+    });
+
+    // Add event listener to generate random key
+    document.getElementById('generateKeyBtn').addEventListener('click', function() {
+        // Customize this function to generate your desired key format
+        var randomKey = generateRandomKey();
+        document.getElementById('id_nvarkey').value = randomKey;
+    });
+
+    // Function to generate a random key
+    function generateRandomKey() {
+        // Customize this function to generate your desired key format
+        // For simplicity, we're using a random 12-character alphanumeric key
+        var key = Math.random().toString(36).substring(2, 14).toUpperCase();
+        return key;
+    }
+
+</script>
+
+{% endblock %}

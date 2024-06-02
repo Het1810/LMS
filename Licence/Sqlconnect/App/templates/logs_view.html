@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Logs{% endblock %}
+
+{% block content %}
+<!--  <div class="container mt-5">-->
+<!--    <h2>Client List</h2>-->
+<!--    <h1>Logs view</h1>-->
+    <div class="container mt-4">
+        <h5>Logs</h5>
+        <form id="log-filter-form" method="get" style="display: flex; justify-content: space-between;margin: 10px; padding: 15px;">
+            <div class="form-group">
+                <label for="{{ log_filter.form.intuserid.id_for_label }}" class="col-form-label">User:</label>
+                {{ log_filter.form.intuserid }}
+            </div>
+            <div class="form-group">
+                <label for="{{ log_filter.form.intmoduleid.id_for_label }}" class="col-form-label">Module:</label>
+                {{ log_filter.form.intmoduleid }}
+            </div>
+            <div class="form-group">
+                <label for="{{ log_filter.form.intactionid.id_for_label }}" class="col-form-label">Action:</label>
+                {{ log_filter.form.intactionid }}
+            </div>
+            <div class="form-group">
+                <label for="{{ log_filter.form.dtdatetime.id_for_label }}" class="col-form-label">Date:</label>
+                {{ log_filter.form.dtdatetime }}
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+<!--            <a href="{% url 'log_view' %}" class="btn btn-secondary">Reset</a>-->
+            <a href="{% url 'client' %}" class="btn btn-secondary">Back</a>
+        </form>
+
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+<!--              <th>User name</th>-->
+              <th>Module</th>
+              <th>Action</th>
+              <th>Client</th>
+              <th>License</th>
+              <th>Date & Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs_data %}
+              <tr>
+                <td>{{ log.intid }}</td>
+                <td>{{ log.intuserid.username }}</td>
+<!--                <td></td>-->
+                <td>{{ log.intmoduleid.nvarname }}</td>
+                <td>{{ log.intactionid.nvarname }}</td>
+                <td>{{ log.intclientid.nvarname|default:"None" }}</td>
+                <td>{{ log.intlicenseid.nvarkey|default:"None" }}</td>
+                <td>{{ log.dtdatetime }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+<!-- ... Your existing HTML code ... -->
+
+<script>
+    $(document).ready(function () {
+        // Intercept form submission
+        $('#log-filter-form').submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Serialize form data
+            var formData = $(this).serialize();
+
+            // Send AJAX request to your server
+            $.ajax({
+                type: 'GET',
+                url: '{% url 'log_view' %}',  // Replace with the actual URL endpoint
+                data: formData,
+                success: function (data) {
+                    // Update the table body with the filtered data
+                    $('tbody').html(data);
+                },
+                error: function () {
+                    console.log('Error occurred during AJAX request');
+                }
+            });
+        });
+
+        // Attach the resetFilters function to the button click event
+        $('.btn-secondary').on('click', function () {
+            resetFilters();
+        });
+
+    });
+
+    function resetFilters() {
+        // Replace 'log-filter-form' with the actual id of your form
+        var form = document.getElementById('log-filter-form');
+
+        // Reset each form field
+        form.intuserid.value = '';
+        form.intmoduleid.value = '';
+        form.intactionid.value = '';
+        form.dtdatetime.value = '';
+
+        // Submit the form to trigger the filtering logic
+        $(form).submit();
+    }
+</script>
+<!--<script>-->
+<!--document.addEventListener("DOMContentLoaded", function () {-->
+<!--    // Intercept form submission-->
+<!--    document.getElementById('log-filter-form').addEventListener('submit', function (e) {-->
+<!--        e.preventDefault(); // Prevent the default form submission-->
+
+<!--        // Serialize form data-->
+<!--        var formData = new FormData(this);-->
+
+<!--        // Send AJAX request to your server using Fetch API-->
+<!--        fetch('{% url 'log_view' %}', {-->
+<!--            method: 'GET',-->
+<!--            credentials: 'same-origin',-->
+<!--            headers: {-->
+<!--                'X-Requested-With': 'XMLHttpRequest',-->
+<!--            },-->
+<!--            body: formData,-->
+<!--        })-->
+<!--        .then(response => response.text())-->
+<!--        .then(data => {-->
+<!--            // Update the table body with the filtered data-->
+<!--            document.querySelector('tbody').innerHTML = data;-->
+<!--        })-->
+<!--        .catch(error => {-->
+<!--            console.log('Error occurred during fetch:', error);-->
+<!--        });-->
+<!--    });-->
+
+<!--    // Attach the resetFilters function to the button click event-->
+<!--    document.querySelector('.btn-secondary').addEventListener('click', function () {-->
+<!--        resetFilters();-->
+<!--    });-->
+<!--});-->
+
+<!--// Function to reset filters-->
+<!--function resetFilters() {-->
+<!--    // Reset form values-->
+<!--    document.getElementById('log-filter-form').reset();-->
+
+<!--    // Trigger a form submission to reload the original data-->
+<!--    document.getElementById('log-filter-form').dispatchEvent(new Event('submit'));-->
+<!--}-->
+<!--</script>-->
+
+
+<!-- ... Rest of your HTML code ... -->
+{% endblock %}
